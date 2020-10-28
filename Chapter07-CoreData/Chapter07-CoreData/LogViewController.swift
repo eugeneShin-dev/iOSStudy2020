@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import CoreData
 
 public enum LogType: Int16 {
     case create = 0
@@ -14,6 +15,7 @@ public enum LogType: Int16 {
 }
 
 class LogViewController: UITableViewController {
+    var board: BoardMO! // 게시글 정보를 전달받을 변수
     
 }
 

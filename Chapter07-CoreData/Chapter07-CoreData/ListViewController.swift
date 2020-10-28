@@ -39,6 +39,12 @@ class ListViewController: UITableViewController {
         object.setValue(contents, forKey: "contents")
         object.setValue(Date(), forKey: "regdate")
         
+        let logObject = NSEntityDescription.insertNewObject(forEntityName: "Log", into: context) as! LogMO
+        
+        logObject.regdate = Date()
+        logObject.type = LogType.create.rawValue
+        (object as! BoardMO).addToLogs(logObject)
+        
         // 커밋하기
         do {
             try context.save()
@@ -73,6 +79,12 @@ class ListViewController: UITableViewController {
         object.setValue(title, forKey: "title")
         object.setValue(contents, forKey: "contents")
         object.setValue(Date(), forKey: "regdate")
+        
+        let logObject = NSEntityDescription.insertNewObject(forEntityName: "Log", into: context) as! LogMO
+        
+        logObject.regdate = Date()
+        logObject.type = LogType.create.rawValue
+        (object as! BoardMO).addToLogs(logObject)
         
         do {
             try context.save()

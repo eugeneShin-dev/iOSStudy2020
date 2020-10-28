@@ -63,12 +63,12 @@
 				D25FB1FD25484B3F002CDC92 /* AppDelegate.swift */,
 				D25FB1FF25484B3F002CDC92 /* SceneDelegate.swift */,
 				D25FB21525484C74002CDC92 /* ListViewController.swift */,
+				D259408D25490ECA001C6F8C /* LogViewController.swift */,
 				D25FB20325484B3F002CDC92 /* Main.storyboard */,
 				D25FB20925484B41002CDC92 /* Assets.xcassets */,
 				D25FB20B25484B41002CDC92 /* LaunchScreen.storyboard */,
 				D25FB20E25484B41002CDC92 /* Info.plist */,
 				D25FB20625484B3F002CDC92 /* Chapter07_CoreData.xcdatamodeld */,
-				D259408D25490ECA001C6F8C /* LogViewController.swift */,
 			);
 			path = "Chapter07-CoreData";
 			sourceTree = "<group>";

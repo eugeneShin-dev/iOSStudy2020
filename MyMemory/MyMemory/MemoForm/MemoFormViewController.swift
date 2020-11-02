@@ -10,9 +10,11 @@ import UIKit
 
 class MemoFormViewController: UIViewController {
     var subject: String!
+    lazy var dao = MemoDAO()
     
     @IBOutlet weak var contents: UITextView!
     @IBOutlet weak var preview: UIImageView!
+    
     @IBAction func save(_ sender: Any) {
         
         // 경고창에 사용될 콘텐츠 뷰 컨트롤러 구성
@@ -44,9 +46,12 @@ class MemoFormViewController: UIViewController {
         data.image = self.preview.image
         data.regdate = Date()
         
-        // AppDelegate 객체를 읽어온 후 memolist 배열에 MemoData 객체 추가
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        appDelegate.memolist.append(data)
+//        // AppDelegate 객체를 읽어온 후 memolist 배열에 MemoData 객체 추가
+//        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+//        appDelegate.memolist.append(data)
+        
+        // 코어 데이터에 메모 데이터 추가
+        self.dao.insert(data)
         
         // 작성폼 화면 종료 후 이전 화면으로 복귀
         _ = self.navigationController?.popViewController(animated: true)

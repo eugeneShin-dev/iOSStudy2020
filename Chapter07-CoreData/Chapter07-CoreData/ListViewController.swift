@@ -184,4 +184,11 @@ class ListViewController: UITableViewController {
         
         self.present(alert, animated: false)
     }
+    
+    override func tableView(_ tableView: UITableView, accessoryButtonTappedForRowWith indexPath: IndexPath) {
+        let object = self.list[indexPath.row]
+        let uvc = self.storyboard?.instantiateViewController(withIdentifier: "LogVC") as! LogViewController
+        uvc.board = (object as! BoardMO)
+        self.show(uvc, sender: self)
+    }
 }

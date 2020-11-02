@@ -38,6 +38,12 @@ class LogViewController: UITableViewController {
         
         return cell
     }
+    
+    override func tableView(_ tableView: UITableView, accessoryButtonTappedForRowWith indexPath: IndexPath) {
+        let object = self.list[indexPath.row]
+        let uvc = self.storyboard?.instantiateViewController(withIdentifier: "LogVC") as! LogViewController
+        
+    }
 }
 
 extension Int16 {

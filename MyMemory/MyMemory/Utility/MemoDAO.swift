@@ -15,7 +15,8 @@ class MemoDAO {
         return appDelegate.persistentContainer.viewContext
     }()
     
-    func fetch() -> [MemoData] {
+    // 매개변수를 추가해 검색 키워드를 전달받도록 수정
+    func fetch(keyword text: String? = nil) -> [MemoData] {
         var memoList = [MemoData]()
         // 요청 객체 생성
         /// - NSManagedObject와 MemoMO 클래스에서 반환하는 타입이 다르기 때문에 타입 어노테이션을 명시!
@@ -24,6 +25,11 @@ class MemoDAO {
         // 정렬 객체 생성: 최신 글순으로 정렬
         let regdateDesc = NSSortDescriptor(key: "regdate", ascending: false)
         fetchRequest.sortDescriptors = [regdateDesc]
+        
+        // contents에 키워드를 포함하는 레코드를 모두 찾아 가져오는 검색 수행
+        if let text = text, text.isEmpty == false {
+            fetchRequest.predicate = NSPredicate(format: "contents CONTAINS[c] %@", text)
+        }
         
         do {
             let resultset = try self.context.fetch(fetchRequest)

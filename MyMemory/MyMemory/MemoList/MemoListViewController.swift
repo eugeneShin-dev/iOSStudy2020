@@ -12,8 +12,13 @@ class MemoListViewController: UITableViewController {
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
     lazy var dao = MemoDAO()
     
+    @IBOutlet weak var searchBar: UISearchBar!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // 검색 바의 키보드에서 리턴 키가 항상 활성화되도록 처리
+        searchBar.enablesReturnKeyAutomatically = false
         
         // SWRevealViewController 라이브러리의 revealViewController 객체 읽어오기
         if let revealVC = self.revealViewController() {
@@ -27,11 +32,6 @@ class MemoListViewController: UITableViewController {
             // 제스쳐 객체 추가
             self.view.addGestureRecognizer(revealVC.panGestureRecognizer())
         }
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -102,5 +102,18 @@ class MemoListViewController: UITableViewController {
             self.appDelegate.memolist.remove(at: indexPath.row)
             self.tableView.deleteRows(at: [indexPath], with: .fade)
         }
+    }
+}
+
+extension MemoListViewController: UISearchBarDelegate {
+    
+    // 사용자가 검색버튼을 터치했을 때 실행되는 메소드
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        // 검색 바에 입력된 키워드를 가져오기
+        let keyword = searchBar.text
+        
+        // 키워드를 적용해 데이터를 검색하고, 테이블 뷰 갱신
+        self.appDelegate.memolist = self.dao.fetch(keyword: keyword)
+        self.tableView.reloadData()
     }
 }

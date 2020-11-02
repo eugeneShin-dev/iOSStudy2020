@@ -72,4 +72,20 @@ class MemoDAO {
             NSLog("An error has occurred: %s", e.localizedDescription)
         }
     }
+    
+    func delete(_ objectID: NSManagedObjectID) -> Bool {
+        // 삭제할 객체 찾기
+        let object = self.context.object(with: objectID)
+        // 컨텍스트에서 삭제
+        self.context.delete(object)
+        
+        do {
+            // 삭제된 내역을 영구저장소에 반영
+            try self.context.save()
+            return true
+        } catch let e as NSError {
+            NSLog("An error has occurred: %s", e.localizedDescription)
+            return false
+        }
+    }
 }

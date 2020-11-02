@@ -10,6 +10,7 @@ import UIKit
 
 class MemoListViewController: UITableViewController {
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
+    lazy var dao = MemoDAO()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,6 +43,9 @@ class MemoListViewController: UITableViewController {
             self.present(viewController, animated: false)
             return
         }
+        
+        // 코어 데이터에 저장된 데이터 가져오기
+        self.appDelegate.memolist = self.dao.fetch()
         
         self.tableView.reloadData()
     }

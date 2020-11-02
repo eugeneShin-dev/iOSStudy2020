@@ -51,4 +51,25 @@ class MemoDAO {
         }
         return memoList
     }
+    
+    func insert(_ data: MemoData) {
+        // 관리 객체 인스턴스 생성
+        let object = NSEntityDescription.insertNewObject(forEntityName: "Memo", into: self.context) as! MemoMO
+        
+        // MemoData로부터 값 복사
+        object.title = data.title
+        object.contents = data.contents
+        object.regdate = data.regdate!
+        
+        if let image = data.image {
+            object.image = image.pngData()!
+        }
+        
+        // 영구 저장소에 변경 사항 반영
+        do {
+            try self.context.save()
+        } catch let e as NSError {
+            NSLog("An error has occurred: %s", e.localizedDescription)
+        }
+    }
 }

@@ -14,6 +14,8 @@ class JoinViewController: UIViewController, UITableViewDataSource, UITableViewDe
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var indicatorView: UIActivityIndicatorView!
     
+    var isCalling = false // API 호출 상태값 관리할 변수
+    
     var fieldAccount: UITextField!
     var fieldPassword: UITextField!
     var fieldName: UITextField!
@@ -32,6 +34,14 @@ class JoinViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     @IBAction func submit(_ sender: Any) {
+        
+        if self.isCalling == true { // 이미 Done 버튼을 눌러 계정 등록이 진행 중
+            self.alert("진행 중. 기다려주세요.")
+            return
+        } else {
+            self.isCalling = true
+        }
+        
         // 0. 인디케이터 뷰 애니메이션 시작
         self.indicatorView.startAnimating()
         
@@ -54,10 +64,10 @@ class JoinViewController: UIViewController, UITableViewDataSource, UITableViewDe
         call.responseJSON { res in
             // 인디케이터 뷰 애니메이션 종료
             self.indicatorView.stopAnimating()
-            ㅓㅓㅓ
             
             // JSON 형식으로 값이 제대로 전달되었는지 확인
             guard let jsonObject = try! res.result.get() as? [String: Any] else {
+                self.isCalling = false // 다시 등록할 수 있게 하자
                 self.alert("서버 호출 과정에서 오류 발생")
                 return
             }
@@ -66,6 +76,7 @@ class JoinViewController: UIViewController, UITableViewDataSource, UITableViewDe
             if resultCode == 0 { // 성공
                 self.alert("가입 완료")
             } else { // 실패
+                self.isCalling = false
                 let errorMsg = jsonObject["error_msg"] as! String
                 self.alert("오류 발생 : \(errorMsg)")
             }

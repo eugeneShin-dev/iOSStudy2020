@@ -368,7 +368,7 @@
                     <navigationItem key="navigationItem" id="A3T-ro-qgq">
                         <barButtonItem key="rightBarButtonItem" title="새 계정" id="mja-zA-v6z">
                             <connections>
-                                <segue destination="r6v-pm-E2n" kind="show" id="Zq2-O0-SaB"/>
+                                <segue destination="r6v-pm-E2n" kind="show" identifier="" id="Zq2-O0-SaB"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -437,9 +437,11 @@
                         <outlet property="indicatorView" destination="CjX-OB-PKk" id="GGx-iV-gGf"/>
                         <outlet property="profile" destination="0Lx-2Z-nbJ" id="hco-aq-pDE"/>
                         <outlet property="tableView" destination="9hb-82-fTf" id="x3Q-6r-e3p"/>
+                        <segue destination="T96-EA-MPV" kind="unwind" identifier="backProfileVC" unwindAction="backProfileVC:" id="txf-1N-x4v"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hbM-Ia-5Dz" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <exit id="T96-EA-MPV" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="2670" y="1201"/>
         </scene>

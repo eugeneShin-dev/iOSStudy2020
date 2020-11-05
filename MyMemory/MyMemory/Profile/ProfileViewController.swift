@@ -34,6 +34,10 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         self.profileImage.isUserInteractionEnabled = true
     }
     
+    @IBAction func backProfileVC(_ segue: UIStoryboardSegue) {
+        // 프로필 화면으로 돌아오기 위한 표식 역할이므로 내용 작성 x
+    }
+    
     func setProfileImage() {
         let image = self.userInfoManager.profile
             

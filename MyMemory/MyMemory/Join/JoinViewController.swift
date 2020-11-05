@@ -74,7 +74,9 @@ class JoinViewController: UIViewController, UITableViewDataSource, UITableViewDe
             
             let resultCode = jsonObject["result_code"] as! Int
             if resultCode == 0 { // 성공
-                self.alert("가입 완료")
+                self.alert("가입 완료") {
+                    self.performSegue(withIdentifier: "backProfileVC", sender: self)
+                }
             } else { // 실패
                 self.isCalling = false
                 let errorMsg = jsonObject["error_msg"] as! String

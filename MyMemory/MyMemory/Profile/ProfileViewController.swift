@@ -7,7 +7,9 @@
 //
 
 class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+    @IBOutlet weak var indicatorView: UIActivityIndicatorView!
     let userInfoManager = UserInfoManager()
+    var isCalling = false
     
     let profileImage = UIImageView()
     let tableView = UITableView()
@@ -32,6 +34,8 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         let tap = UITapGestureRecognizer(target: self, action: #selector(profile(_:)))
         self.profileImage.addGestureRecognizer(tap)
         self.profileImage.isUserInteractionEnabled = true
+        
+        self.view.bringSubviewToFront(indicatorView)
     }
     
     @IBAction func backProfileVC(_ segue: UIStoryboardSegue) {
@@ -150,6 +154,15 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     @objc func doLogin(_ sender: Any) {
+        if self.isCalling == true {
+            self.alert("응답 대기")
+            return
+        } else {
+            self.isCalling = true
+        }
+        
+        self.indicatorView.startAnimating()
+        
         let loginAlert = UIAlertController(title: "LOGIN", message: nil, preferredStyle: .alert)
         // 로그인 창에 들어갈 입력폼
         loginAlert.addTextField() { (textField) in
@@ -162,22 +175,24 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         }
         
         // 알림창 버튼 추가
-        loginAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        loginAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel) { (_) in
+            self.isCalling = false
+        })
         loginAlert.addAction(UIAlertAction(title: "Login", style: .destructive) { (_) in
             let account = loginAlert.textFields?[0].text ?? ""
             let password = loginAlert.textFields?[1].text ?? ""
                                 
-            if self.userInfoManager.login(account: account, password: password) {
-                // TODO: 로그인 성공시
+            self.userInfoManager.login(account: account, password: password, success: {
+                self.indicatorView.stopAnimating()
+                self.isCalling = false
                 self.tableView.reloadData()
-                self.profileImage.image = self.userInfoManager.profile // 프로필 이미지 갱신
+                self.profileImage.image = self.userInfoManager.profile
                 self.drawButton()
-            } else {
-                let msg = "로그인에 실패하였습니다."
-                let alert = UIAlertController(title: nil, message: msg, preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: "OK", style: .cancel))
-                self.present(alert, animated: false)
-            }
+            }, fail: { msg in
+                self.indicatorView.stopAnimating()
+                self.isCalling = false
+                self.alert(msg)
+            })
         })
         self.present(loginAlert, animated: false)
     }
@@ -187,7 +202,9 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         let alert = UIAlertController(title: nil, message: msg, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "취소", style: .cancel))
         alert.addAction(UIAlertAction(title: "확인", style: .destructive) { (_) in
-            if self.userInfoManager.logout() {
+            self.indicatorView.startAnimating()
+            self.userInfoManager.logout() {
+                self.indicatorView.stopAnimating()
                 self.tableView.reloadData()
                 self.profileImage.image = self.userInfoManager.profile
                 self.drawButton()

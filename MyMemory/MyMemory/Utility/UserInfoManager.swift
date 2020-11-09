@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Alamofire
 
 struct UserInfoKey {
     static let loginId = "LOGINID"
@@ -79,26 +80,83 @@ class UserInfoManager {
         }
     }
     
-    func login(account: String, password: String) -> Bool {
-        // TODO: 서버 연동 코드로 대체하기
-        if account.isEqual("shinyou@kakao.com") && password.isEqual("1234") {
-            let userDefaults = UserDefaults.standard
-            userDefaults.set(100, forKey: UserInfoKey.loginId)
-            userDefaults.set(account, forKey: UserInfoKey.account)
-            userDefaults.set("헤일리", forKey: UserInfoKey.name)
-            userDefaults.synchronize()
-            return true
-        } else {
-            return false
+    func login(account: String, password: String, success: (()->Void)? = nil, fail: ((String)->Void)? = nil) {
+       // 1. URL과 전송할 값 준비
+        let url = "http://swiftapi.rubypaper.co.kr:2029/userAccount/login"
+        let param: Parameters = [
+            "account": account,
+            "passwd" : password
+        ]
+        
+        // 2. API 호출
+        let call = AF.request(url, method: .post, parameters: param, encoding: JSONEncoding.default)
+        
+        // 3. API 호출 결과 처리
+        call.responseJSON { res in
+            // 3-1. JSON 형식으로 응답했는지 확인
+            let result = try! res.result.get()
+            guard let jsonObject = result as? NSDictionary else {
+                fail?("잘못된 응답 형식입니다:\(result)")
+                return
+            }
+            // 3-2. 응답 코드 확인
+            let resultCode = jsonObject["result_code"] as! Int
+            if resultCode == 0 { // 로그인 성공
+                // 3-3. user_info 이하 항목을 딕셔너리 형태로 추출하여 저장
+                let user = jsonObject["user_info"] as! NSDictionary
+                
+                self.loginId = user["user_id"] as! Int
+                self.account = user["account"] as? String
+                self.name = user["name"] as? String
+                
+                // 3-4. user_info 항목 중에서 프로필 이미지 처리
+                if let path = user["profile_path"] as? String {
+                    if let imageData = try? Data(contentsOf: URL(string: path)!) {
+                        self.profile = UIImage(data: imageData)
+                    }
+                }
+                
+                let accessToken = jsonObject["access_token"] as! String
+                let refreshToken = jsonObject["refresh_token"] as! String
+                
+                let tokenUtil = TokenUtils()
+                tokenUtil.save("kr.co.rubypaper.MyMemory", account: "accessToken", value: accessToken)
+                tokenUtil.save("kr.co.rubypaper.MyMemory", account: "refreshToken", value: refreshToken                                                                                                                                                                               )
+                
+                // 3-5. 인자값으로 입력된 success 클로저 블록 실행
+                success?()
+            } else { // 실패
+                let message = (jsonObject["error_msg"] as? String) ?? "로그인이 실패했습니다."
+                fail?(message)
+            }
         }
     }
     
-    func logout() -> Bool {
+    func logout(completion: (()->Void)? = nil) {
+        let url = "http://swiftapi.rubypaper.co.kr:2029/userAccount/logout"
+        
+        let tokenUtils = TokenUtils()
+        let header = tokenUtils.getAuthorizationHeader()
+        
+        let call = AF.request(url, method: .post, encoding: JSONEncoding.default, headers: header)
+        
+        call.responseJSON { _ in
+            self.deviceLogout()
+            
+            completion?()
+        }
+    }
+    
+    func deviceLogout() {
         let userDefaults = UserDefaults.standard
         userDefaults.removeObject(forKey: UserInfoKey.loginId)
         userDefaults.removeObject(forKey: UserInfoKey.account)
         userDefaults.removeObject(forKey: UserInfoKey.name)
         userDefaults.removeObject(forKey: UserInfoKey.profile)
-        return true
+        userDefaults.synchronize()
+        
+        let tokenUtils = TokenUtils()
+        tokenUtils.delete("kr.co.rubypaper.MyMemory", account: "refreshToken")
+        tokenUtils.delete("kr.co.rubypaper.MyMemory", account: "accessToken")
     }
 }

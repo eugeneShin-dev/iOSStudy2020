@@ -18,6 +18,7 @@
 		D262ACFE252C4864007BF17D /* SideBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D262ACFD252C4864007BF17D /* SideBarViewController.swift */; };
 		D262AD2A252C699F007BF17D /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D262AD29252C699F007BF17D /* ProfileViewController.swift */; };
 		D27150BF2553937C00D2E6E3 /* JoinViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D27150BE2553937C00D2E6E3 /* JoinViewController.swift */; };
+		D27C1E2F255A96610092680F /* DataSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = D27C1E2E255A96610092680F /* DataSync.swift */; };
 		D27D8032250F93A8006A0191 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D27D8031250F93A8006A0191 /* AppDelegate.swift */; };
 		D27D8034250F93A8006A0191 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D27D8033250F93A8006A0191 /* SceneDelegate.swift */; };
 		D27D8039250F93A8006A0191 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D27D8037250F93A8006A0191 /* Main.storyboard */; };
@@ -60,6 +61,7 @@
 		D262ACFD252C4864007BF17D /* SideBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideBarViewController.swift; sourceTree = "<group>"; };
 		D262AD29252C699F007BF17D /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		D27150BE2553937C00D2E6E3 /* JoinViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoinViewController.swift; sourceTree = "<group>"; };
+		D27C1E2E255A96610092680F /* DataSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataSync.swift; sourceTree = "<group>"; };
 		D27D802E250F93A8006A0191 /* MyMemory.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyMemory.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D27D8031250F93A8006A0191 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D27D8033250F93A8006A0191 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -125,6 +127,7 @@
 				D24B428A2535B0CA0086DDA4 /* UserInfoManager.swift */,
 				D2035D2D25373A4D00AF6796 /* Util.swift */,
 				D25B9C3825501B8500CB5CCA /* MemoDAO.swift */,
+				D27C1E2E255A96610092680F /* DataSync.swift */,
 			);
 			path = Utility;
 			sourceTree = "<group>";
@@ -397,6 +400,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D2805B9B252B05AA0024C944 /* CSLogButton.swift in Sources */,
+				D27C1E2F255A96610092680F /* DataSync.swift in Sources */,
 				D262ACFE252C4864007BF17D /* SideBarViewController.swift in Sources */,
 				D27D804F250FA531006A0191 /* MemoCell.swift in Sources */,
 				D27D8051250FA58A006A0191 /* MemoData.swift in Sources */,

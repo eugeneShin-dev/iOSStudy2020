@@ -30,47 +30,26 @@
 /// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 /// THE SOFTWARE.
 
-import Foundation
 import Alamofire
+import Foundation
 
-class GitAPIManager {
-  static let shared = GitAPIManager()
+class GitNetworkLogger: EventMonitor {
+  // 이벤트를 dispatch할 DispatchQueue가 필요
+  let queue = DispatchQueue(label: "com.raywenderlich.gitonfire.networklogger")
   
-  let sessionManager: Session = {
-    let configuration = URLSessionConfiguration.af.default
-    configuration.timeoutIntervalForRequest = 30
-    configuration.waitsForConnectivity = true
-    let networkLogger = GitNetworkLogger()
-    return Session(configuration: configuration, eventMonitors: [networkLogger])
-  }()
-
-  func fetchPopularSwiftRepositories(completion: @escaping ([Repository]) -> Void) {
-    searchRepositories(query: "language:Swift", completion: completion)
+  func requestDidFinish(_ request: Request) {
+    print(request.description)
   }
-
-  func fetchCommits(for repository: String, completion: @escaping ([Commit]) -> Void) {
-    let url = "https://api.github.com/repos/\(repository)/commits"
-    sessionManager.request(url)
-      .responseDecodable(of: [Commit].self) { response in
-        guard let commits = response.value else {
-          return
-        }
-        completion(commits)
-      }
-  }
-
-  func searchRepositories(query: String, completion: @escaping ([Repository]) -> Void) {
-    let url = "https://api.github.com/search/repositories"
-    var queryParameters: [String: Any] = ["sort": "stars", "order": "desc", "page": 1]
-    queryParameters["q"] = query
-    
-    // 전달 받은 response를 decode한 후 레퍼지토리의 array를 compeletion block으로 리턴한다
-    sessionManager.request(url, parameters: queryParameters)
-      .responseDecodable(of: Repositories.self) { response in
-        guard let items = response.value else {
-          return completion([])
-        }
-        completion(items.items)
-      }
+  
+  func request<Value>(
+    _request: DataRequest,
+    didParseResponse response: DataResponse<Value, AFError>
+  )  {
+    guard let data = response.data else {
+      return
+    }
+    if let json = try? JSONSerialization.jsonObject(with: data, options: .mutableContainers) {
+      print(json)
+    }
   }
 }

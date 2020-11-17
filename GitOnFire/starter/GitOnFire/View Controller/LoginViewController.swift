@@ -69,6 +69,12 @@ class LoginViewController: UIViewController {
       }
       print(value)
       //TODO: Call to fetch access token will be added here
+      GitAPIManager.shared.fetchAccessToken(accessCode: value) { [self] isSuccess in
+        if !isSuccess {
+          print("error fetching access token")
+        }
+        navigationController?.popViewController(animated: true)
+      }
     }
     webAuthenticationSession?.presentationContextProvider = self
     webAuthenticationSession?.start()

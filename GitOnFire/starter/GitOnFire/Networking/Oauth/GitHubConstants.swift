@@ -31,8 +31,8 @@
 /// THE SOFTWARE.
 
 enum GitHubConstants {
-  static let clientID = "ENTER_CLIENT_ID"
-  static let clientSecret = "ENTER_CLIENT_SECRET"
+  static let clientID = "da1895464f4ea7b5e6d1"
+  static let clientSecret = "a22bbb55ea78e9ae2a6d4f61dbe03a1395af88dc"
   static let redirectURI = "gitonfire://"
   static let scope = "repo user"
   static let authorizeURL = "https://github.com/login/oauth/authorize"

@@ -51,7 +51,6 @@ class RepositoriesViewController: UITableViewController {
     searchBar.delegate = self
     loadingIndicator.center = view.center
     view.addSubview(loadingIndicator)
-    loginButton.isHidden = true
   }
 
   override func viewWillAppear(_ animated: Bool) {

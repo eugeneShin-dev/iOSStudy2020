@@ -73,4 +73,27 @@ class GitAPIManager {
         completion(items.items)
       }
   }
+  
+  func fetchAccessToken(accessCode: String, completion: @escaping (Bool) -> Void) {
+    let headers: HTTPHeaders = [
+      "Accept" : "application/json"
+    ]
+    
+    let parameters = [
+      "client_id" : GitHubConstants.clientID,
+      "client_secret" : GitHubConstants.clientSecret,
+      "code" : accessCode
+    ]
+    
+    sessionManager.request("https://github.com/login/oauth/access_token",
+                           method: .post,
+                           parameters: parameters,
+                           headers: headers).responseDecodable(of: GitHubAccessToken.self) { response in
+                            guard let cred = response.value else {
+                              return completion(false)
+                            }
+                            TokenManager.shared.saveAccessToken(gitToken: cred)
+                            completion(true)
+                           }
+  }
 }

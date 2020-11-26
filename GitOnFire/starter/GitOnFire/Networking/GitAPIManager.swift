@@ -35,13 +35,27 @@ import Alamofire
 
 class GitAPIManager {
   static let shared = GitAPIManager()
-  
+
   let sessionManager: Session = {
     let configuration = URLSessionConfiguration.af.default
-    configuration.timeoutIntervalForRequest = 30
-    configuration.waitsForConnectivity = true
+    configuration.requestCachePolicy = .returnCacheDataElseLoad
+    let responseCacher = ResponseCacher(behavior: .modify { _, response in
+      let userInfo = ["date": Date()]
+      return CachedURLResponse(
+        response: response.response,
+        data: response.data,
+        userInfo: userInfo,
+        storagePolicy: .allowed)
+    })
+
     let networkLogger = GitNetworkLogger()
-    return Session(configuration: configuration, eventMonitors: [networkLogger])
+    let interceptor = GitRequestInterceptor()
+
+    return Session(
+      configuration: configuration,
+      interceptor: interceptor,
+      cachedResponseHandler: responseCacher,
+      eventMonitors: [networkLogger])
   }()
 
   func fetchPopularSwiftRepositories(completion: @escaping ([Repository]) -> Void) {
@@ -49,8 +63,7 @@ class GitAPIManager {
   }
 
   func fetchCommits(for repository: String, completion: @escaping ([Commit]) -> Void) {
-    let url = "https://api.github.com/repos/\(repository)/commits"
-    sessionManager.request(url)
+    sessionManager.request(GitRouter.fetchCommits(repository))
       .responseDecodable(of: [Commit].self) { response in
         guard let commits = response.value else {
           return
@@ -60,40 +73,35 @@ class GitAPIManager {
   }
 
   func searchRepositories(query: String, completion: @escaping ([Repository]) -> Void) {
-    let url = "https://api.github.com/search/repositories"
-    var queryParameters: [String: Any] = ["sort": "stars", "order": "desc", "page": 1]
-    queryParameters["q"] = query
-    
-    // 전달 받은 response를 decode한 후 레퍼지토리의 array를 compeletion block으로 리턴한다
-    sessionManager.request(url, parameters: queryParameters)
+    sessionManager.request(GitRouter.searchRepositories(query))
       .responseDecodable(of: Repositories.self) { response in
-        guard let items = response.value else {
+        guard let repositories = response.value else {
           return completion([])
         }
-        completion(items.items)
+        completion(repositories.items)
       }
   }
-  
+
+
   func fetchAccessToken(accessCode: String, completion: @escaping (Bool) -> Void) {
-    let headers: HTTPHeaders = [
-      "Accept" : "application/json"
-    ]
-    
-    let parameters = [
-      "client_id" : GitHubConstants.clientID,
-      "client_secret" : GitHubConstants.clientSecret,
-      "code" : accessCode
-    ]
-    
-    sessionManager.request("https://github.com/login/oauth/access_token",
-                           method: .post,
-                           parameters: parameters,
-                           headers: headers).responseDecodable(of: GitHubAccessToken.self) { response in
-                            guard let cred = response.value else {
-                              return completion(false)
-                            }
-                            TokenManager.shared.saveAccessToken(gitToken: cred)
-                            completion(true)
-                           }
+    sessionManager.request(GitRouter.fetchAccessToken(accessCode))
+      .responseDecodable(of: GitHubAccessToken.self) { response in
+        guard let token = response.value else {
+          return completion(false)
+        }
+        TokenManager.shared.saveAccessToken(gitToken: token)
+        completion(true)
+      }
+  }
+
+  func fetchUserRepositories(completion: @escaping ([Repository]) -> Void) {
+    sessionManager.request(GitRouter.fetchUserRepositories)
+      .responseDecodable(of: [Repository].self) { response in
+        guard let repositories = response.value else {
+          return completion([])
+        }
+        completion(repositories)
+      }
   }
 }
+

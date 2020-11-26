@@ -79,6 +79,13 @@ class RepositoriesViewController: UITableViewController {
 
   func fetchAndDisplayUserRepositories() {
     //TODO: Add more here..
+    loadingIndicator.startAnimating()
+    
+    GitAPIManager.shared.fetchUserRepositories { [self] repositories in
+      self.repositories = repositories
+      loadingIndicator.stopAnimating()
+      tableView.reloadData()
+    }
   }
 
   func logout() {

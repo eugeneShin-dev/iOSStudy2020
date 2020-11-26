@@ -29,6 +29,7 @@
 		B7F6C0A0249EBA23005B4A08 /* SecureStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7F6C09F249EBA23005B4A08 /* SecureStore.swift */; };
 		B7F6C0A6249EBADF005B4A08 /* TokenManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7F6C0A5249EBADF005B4A08 /* TokenManager.swift */; };
 		D28C4AA025627286002D33E9 /* GitNetworkLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = D28C4A9F25627286002D33E9 /* GitNetworkLogger.swift */; };
+		D298C00A2563B6F0005EBDDF /* GitRequestInterceptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = D298C0092563B6F0005EBDDF /* GitRequestInterceptor.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -55,6 +56,7 @@
 		B7F6C09F249EBA23005B4A08 /* SecureStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SecureStore.swift; sourceTree = "<group>"; };
 		B7F6C0A5249EBADF005B4A08 /* TokenManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenManager.swift; sourceTree = "<group>"; };
 		D28C4A9F25627286002D33E9 /* GitNetworkLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitNetworkLogger.swift; sourceTree = "<group>"; };
+		D298C0092563B6F0005EBDDF /* GitRequestInterceptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitRequestInterceptor.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -122,6 +124,7 @@
 				B7442C2124BB960300BF8E35 /* GitRouter.swift */,
 				B7442C2524BB9A3500BF8E35 /* GitNetworkReachability.swift */,
 				D28C4A9F25627286002D33E9 /* GitNetworkLogger.swift */,
+				D298C0092563B6F0005EBDDF /* GitRequestInterceptor.swift */,
 			);
 			path = Networking;
 			sourceTree = "<group>";
@@ -273,6 +276,7 @@
 				B7F6C08C249D7DB5005B4A08 /* RepositoryCommitsViewController.swift in Sources */,
 				B7F6C0A0249EBA23005B4A08 /* SecureStore.swift in Sources */,
 				B7442C2224BB960300BF8E35 /* GitRouter.swift in Sources */,
+				D298C00A2563B6F0005EBDDF /* GitRequestInterceptor.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

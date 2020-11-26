@@ -91,3 +91,19 @@ enum GitRouter {
     }
   }
 }
+
+extension GitRouter: URLRequestConvertible {
+  func asURLRequest() throws -> URLRequest {
+    let url = try baseURL.asURL().appendingPathComponent(path)
+    var request = URLRequest(url: url)
+    request.method = method
+    
+    if method == .get {
+      request = try URLEncodedFormParameterEncoder().encode(parameters, into: request)
+    } else if method == .post {
+      request = try JSONParameterEncoder().encode(parameters, into: request)
+      request.setValue("application/json", forHTTPHeaderField: "Accept")
+    }
+    return request
+  }
+}

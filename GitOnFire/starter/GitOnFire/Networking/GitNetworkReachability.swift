@@ -35,6 +35,9 @@ import Alamofire
 
 class GitNetworkReachability {
   static let shared = GitNetworkReachability()
+  let reachabilityManager = NetworkReachabilityManager(host: "www.google.com")
+  
+  
   let offlineAlertController: UIAlertController = {
     UIAlertController(title: "No Network", message: "Please connect to network and try again", preferredStyle: .alert)
   }()
@@ -47,5 +50,20 @@ class GitNetworkReachability {
   func dismissOfflineAlert() {
     let rootViewController = UIApplication.shared.windows.first?.rootViewController
     rootViewController?.dismiss(animated: true, completion: nil)
+  }
+  
+  func startNetworkMonitoring() {
+    reachabilityManager?.startListening { status in
+      switch status {
+      case .notReachable:
+        self.showOfflineAlert()
+      case .reachable(.cellular):
+        self.dismissOfflineAlert()
+      case .reachable(.ethernetOrWiFi):
+        self.dismissOfflineAlert()
+      case .unknown:
+        print("Unknown network state")
+      }
+    }
   }
 }

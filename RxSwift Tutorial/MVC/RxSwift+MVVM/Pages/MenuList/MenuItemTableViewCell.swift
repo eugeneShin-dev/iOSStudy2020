@@ -27,6 +27,10 @@ class MenuItemTableViewCell: UITableViewCell {
         self.price.text = "\(price)"
     }
     
+    public func resetCell() {
+        countNumber = 0
+    }
+    
     @IBAction func onIncreaseCount() {
         countNumber += 1
         changeCount(1)

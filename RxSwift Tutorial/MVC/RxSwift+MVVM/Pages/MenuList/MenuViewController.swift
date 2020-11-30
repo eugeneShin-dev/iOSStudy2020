@@ -24,15 +24,13 @@ class MenuViewController: UIViewController {
         super.viewDidLoad()
         totalPrice.text = "\(totalPriceNumber)"
         initSelectedMenu()
-        
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let identifier = segue.identifier ?? ""
         if identifier == "OrderViewController",
             let orderVC = segue.destination as? OrderViewController {
-            // TODO: pass selected menus
-            orderVC.selectedMenu = selectedMenu
+            orderVC.selectedMenu = selectedMenu.filter({ $0.1 > 0 })
         }
     }
 

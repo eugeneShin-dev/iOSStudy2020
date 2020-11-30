@@ -37,17 +37,9 @@ class OrderViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         // TODO: update selected menu info
-        ordersList.text = """
-        SELECTED MENU 1
-        SELECTED MENU 2
-        SELECTED MENU 3
-        SELECTED MENU 4
-        SELECTED MENU 5
-        SELECTED MENU 6
-        SELECTED MENU 7
-        SELECTED MENU 8
-        SELECTED MENU 9
-        """
+        let nameList = selectedMenu.compactMap({"\($0.0.name) \($0.1)개"})
+        let orderListString = nameList.joined(separator: "\n")
+        ordersList.text = orderListString
         
         updateTextViewHeight()
     }

@@ -13,7 +13,7 @@ class MenuViewController: UIViewController {
     
     let menuNameList = ["라면", "떡라면", "치즈라면", "라볶이"]
     let menuPriceList = [3000, 4000, 3500, 4500]
-    var selectedMenu = [(MenuItem, Int)]()
+    var selectedMenu: [(MenuItem, Int)] = []
     var totalPriceNumber: Int = 0 {
         didSet {
             totalPrice.text = "\(totalPriceNumber)"
@@ -32,6 +32,7 @@ class MenuViewController: UIViewController {
         if identifier == "OrderViewController",
             let orderVC = segue.destination as? OrderViewController {
             // TODO: pass selected menus
+            orderVC.selectedMenu = selectedMenu
         }
     }
 

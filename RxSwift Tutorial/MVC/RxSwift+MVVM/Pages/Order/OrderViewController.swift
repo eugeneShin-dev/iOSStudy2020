@@ -10,12 +10,18 @@ import UIKit
 
 class OrderViewController: UIViewController {
     // MARK: - Life Cycle
-
+    var selectedMenu: [(MenuItem, Int)] = []
+        
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        //let totalPrice = 0
-        //let vatPrice = Int(Float(allItemsPrice) * 0.1 / 10 + 0.5) * 10
+        let itemPrice = selectedMenu.compactMap({$0.0.price * $0.1}).reduce(0, +)
+        let vatPrice = Int(Float(itemPrice) * 0.1 / 10 + 0.5) * 10
+        let totalPrice = itemPrice + vatPrice
+        
+        self.itemsPrice.text = "\(itemPrice)"
+        self.vatPrice.text = "\(vatPrice)"
+        self.totalPrice.text = "\(totalPrice)"
     }
 
     override func viewWillAppear(_ animated: Bool) {

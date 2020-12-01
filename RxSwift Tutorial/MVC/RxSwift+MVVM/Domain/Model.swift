@@ -8,6 +8,10 @@
 
 import Foundation
 
+struct Response: Decodable {
+    var menus: [MenuItem]
+}
+
 struct MenuItem: Decodable {
     var name: String
     var price: Int

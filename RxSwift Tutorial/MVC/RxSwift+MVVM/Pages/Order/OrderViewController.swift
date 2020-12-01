@@ -36,7 +36,6 @@ class OrderViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        // TODO: update selected menu info
         let nameList = selectedMenu.compactMap({"\($0.0.name) \($0.1)개"})
         let orderListString = nameList.joined(separator: "\n")
         ordersList.text = orderListString

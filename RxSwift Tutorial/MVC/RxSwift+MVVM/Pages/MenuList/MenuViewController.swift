@@ -11,9 +11,9 @@ import UIKit
 class MenuViewController: UIViewController {
     // MARK: - Life Cycle
     
-    let menuNameList = ["라면", "떡라면", "치즈라면", "라볶이"]
-    let menuPriceList = [3000, 4000, 3500, 4500]
-    var selectedMenu: [(MenuItem, Int)] = []
+//    let menuNameList = ["라면", "떡라면", "치즈라면", "라볶이"]
+//    let menuPriceList = [3000, 4000, 3500, 4500]
+    var menuList: [(MenuItem, Int)] = []
     var totalPriceNumber: Int = 0 {
         didSet {
             totalPrice.text = "\(totalPriceNumber)"
@@ -22,6 +22,7 @@ class MenuViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        initSelectedMenu()
         totalPrice.text = "\(totalPriceNumber)"
         initSelectedMenu()
     }
@@ -30,7 +31,7 @@ class MenuViewController: UIViewController {
         let identifier = segue.identifier ?? ""
         if identifier == "OrderViewController",
             let orderVC = segue.destination as? OrderViewController {
-            orderVC.selectedMenu = selectedMenu.filter({ $0.1 > 0 })
+            orderVC.selectedMenu = menuList.filter({ $0.1 > 0 })
         }
     }
 
@@ -41,8 +42,20 @@ class MenuViewController: UIViewController {
     }
     
     func initSelectedMenu() {
-        for index in 0..<menuNameList.count {
-            selectedMenu.append((MenuItem(name: menuNameList[index], price: menuPriceList[index]), 0))
+        APIService.fetchAllMenus {[weak self] result in
+            switch result {
+            case .success(let data):
+                let decoder = JSONDecoder()
+                if let menuList = try? decoder.decode(Response.self, from: data) {
+                    self?.menuList = menuList.menus.map({ ($0, 0) })
+                    DispatchQueue.main.async {
+                        self?.tableView.reloadData()
+                    }
+                }
+            case .failure(let error):
+                self?.showAlert("오류", "데이터 로드 중 오류 발생")
+                print(error.localizedDescription)
+            }
         }
     }
 
@@ -55,8 +68,9 @@ class MenuViewController: UIViewController {
 
     @IBAction func onClear() {
         totalPriceNumber = 0
-        for index in 0..<menuNameList.count {
-            selectedMenu[index].1 = 0
+        
+        for index in 0..<menuList.count {
+            menuList[index].1 = 0
             if let cell = tableView.cellForRow(at: IndexPath(row: index, section: 0)) as? MenuItemTableViewCell {
                 cell.resetCell()
             }
@@ -77,23 +91,24 @@ class MenuViewController: UIViewController {
 
 extension MenuViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return menuNameList.count
+        return menuList.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "MenuItemTableViewCell") as! MenuItemTableViewCell
         let index = indexPath.row
-        cell.setCellInfo(name: menuNameList[index], price: menuPriceList[index])
+        let menu = menuList[index].0
+        cell.setCellInfo(name: menu.name, price: menu.price)
         cell.changeCount = { [weak self] offset in
             var priceResult = self?.totalPriceNumber ?? 0
-            let menuPrice = self?.menuPriceList[index] ?? 0
+            let menuPrice = menu.price
             if offset > 0 {
                 priceResult += menuPrice
-                self?.selectedMenu[index].1 += 1
+                self?.menuList[index].1 += 1
             } else {
                 priceResult = (priceResult - menuPrice) > 0 ? (priceResult - menuPrice) : 0
-                let previousCount = self?.selectedMenu[index].1 ?? 0
-                self?.selectedMenu[index].1 = (previousCount - 1) > 0 ? (previousCount - 1) : 0
+                let previousCount = self?.menuList[index].1 ?? 0
+                self?.menuList[index].1 = (previousCount - 1) > 0 ? (previousCount - 1) : 0
             }
             self?.totalPriceNumber = priceResult
         }

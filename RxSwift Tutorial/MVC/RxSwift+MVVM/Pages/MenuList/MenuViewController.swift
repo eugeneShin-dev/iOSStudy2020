@@ -19,6 +19,11 @@ class MenuViewController: UIViewController {
             totalPrice.text = "\(totalPriceNumber)"
         }
     }
+    var numberOfItems: Int = 0 {
+        didSet {
+            itemCountLabel.text = "\(numberOfItems)"
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -103,9 +108,11 @@ extension MenuViewController: UITableViewDataSource {
             var priceResult = self?.totalPriceNumber ?? 0
             let menuPrice = menu.price
             if offset > 0 {
+                self?.numberOfItems += 1
                 priceResult += menuPrice
                 self?.menuList[index].1 += 1
             } else {
+                self?.numberOfItems -= 1
                 priceResult = (priceResult - menuPrice) > 0 ? (priceResult - menuPrice) : 0
                 let previousCount = self?.menuList[index].1 ?? 0
                 self?.menuList[index].1 = (previousCount - 1) > 0 ? (previousCount - 1) : 0

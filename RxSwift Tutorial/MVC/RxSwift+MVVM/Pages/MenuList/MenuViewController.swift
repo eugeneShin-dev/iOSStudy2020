@@ -73,7 +73,7 @@ class MenuViewController: UIViewController {
 
     @IBAction func onClear() {
         totalPriceNumber = 0
-        
+        numberOfItems = 0
         for index in 0..<menuList.count {
             menuList[index].1 = 0
             if let cell = tableView.cellForRow(at: IndexPath(row: index, section: 0)) as? MenuItemTableViewCell {
